@@ -8,8 +8,13 @@ LDFLAGS=-m elf_i386 -Ttext 0x7C00 -e _start
 SRC=../src
 BUILD=../src/build
 
+BOOT=boot
+
 all: $(BUILD)/kernel.bin
 
+$(BOOT):
+	mkdir -p $(BOOT)
+	
 $(BUILD):
 	mkdir -p $(BUILD)
 
@@ -21,6 +26,7 @@ $(BUILD)/kernel.elf: $(BUILD)/kernel.o
 
 $(BUILD)/kernel.bin: $(BUILD)/kernel.elf
 	$(OBJCOPY) -O binary $(BUILD)/kernel.elf $(BUILD)/kernel.bin
+	$(OBJCOPY) -O binary $(BUILD)/kernel.elf $(BOOT)/kernel.bin
 
 run: all
 	qemu-system-i386 -drive format=raw,file=$(BUILD)/kernel.bin
