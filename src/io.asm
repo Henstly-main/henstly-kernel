@@ -1,32 +1,17 @@
-org 0x7c00
-
-start:
-	xor ax,ax
-	xor cx,cx
-	xor bx,bx
-	xor dx,dx
-	
-	
-main:
-	mov si, command
-	mov bx, 0
-	call print_string
-	call input
-	jmp main
-
-
 input:
-.start: ; save registers
-	pusha 
-	pushf
-	mov si, buffer
+.start_input: ; save registers
+	push ax
+	push cx
+	push bx
+	mov si, input_buffer
 	xor cx,cx
-.enter: ; input
+	
+.enter_input: ; input
 	mov ah, 0
 	int 0x16
 	
-	cmp cx, 99 ; check buffer
-	jnb .enter
+	cmp cx, 63 ; check buffer
+	jnb .enter_input
 	
 	cmp al, 0x0d ; Enter -> done
 	je .done_input
@@ -40,11 +25,11 @@ input:
 	
 	mov ah, 0x0e
 	int 0x10
-	jmp .enter
+	jmp .enter_input
 
 .call_backspace:
 	call .backspace
-	jmp .enter
+	jmp .enter_input
 
 .backspace:
 	cmp cx, 0
@@ -67,50 +52,40 @@ input:
 	ret
 	
 .done_input:
-	mov byte [si], 0
+	mov byte [si], 0 ; end buffer
 	
-	mov al, 0x0d
+	mov al, 0x0d ; video Enter
 	mov ah,0x0e
 	int 0x10
 	mov al, 0x0a
 	int 0x10
-	popf
-	popa
+	pop bx
+	pop cx
+	pop ax
 	ret
 	
-
 print_string:
 .print_start: ; push registers, cmp bx for favorite print
-	pusha
-	pushf
-	cmp bx, 0
-	je .print_command
+	push ax
+	
+	mov ah, 0x0e
+	call .print_line
+	
+	pop ax
+	ret
+	
+	
 
-.print_command: ; print prompt
+.print_line: ; print 
 	lodsb
 	cmp al, 0
 	je .done_print
 	
 	mov ah, 0x0e
 	int 0x10
-	jmp .print_command
+	jmp .print_line
 	
 .done_print:
-	popf
-	popa
 	ret
 	
-
-
-buffer:
-	times 100 db 0
-
-flag:
-	times 3 db 0
-
-command:
-	db '\>',0
-
-times 510-($-$$) db 0
-
-dw 0xAA55
+input_buffer: times 64 db 0
