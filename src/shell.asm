@@ -20,7 +20,7 @@ prompt_check:
 	call compare_strs_si_bx    ;| =shutdown?
 	cmp cx, 1                  ;|
 	je .entered_shutdown       ;|
-	
+    
 	jmp .wrong_enter ;| =else
 
 .entered_help: ; help exec
@@ -30,7 +30,7 @@ prompt_check:
 	pop bx
 	pop cx
 	ret
-
+    
 .wrong_enter: ; wrong enter
 	mov si, wrong_command_print
 	call print_string

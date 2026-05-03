@@ -1,16 +1,10 @@
+;org 0x1000
 bits 16
-;org 0x7c00 - in comment for debug
 
+global _start
 
 
 _start:
-	xor ax,ax
-	xor cx,cx
-	xor bx,bx
-	xor dx,dx
-	
-	mov ss, ax
-	mov sp, 0x9000
 	
 	mov si, greet_print
 	call print_string
@@ -27,11 +21,7 @@ main: ; main loop
 %include "io.asm"
 %include "shell.asm"
 %include "stdlib.asm"
+
 %include "data.asm"
 
-
-
-
-times 510-($-$$) db 0
-
-dw 0xAA55
+times 5120 db 0

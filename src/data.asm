@@ -2,6 +2,7 @@
 ;input
 help_command: db "help",0
 shutdown_command: db "shutdown",0
+disk_load_command: db "dload",0 ; disk load
 
 ; output
 prompt: db ">", 0

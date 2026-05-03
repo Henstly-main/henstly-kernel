@@ -1,3 +1,4 @@
+;    io.asm
 input:
 .start_input: ; save registers
 	push ax
@@ -87,5 +88,41 @@ print_string:
 	
 .done_print:
 	ret
-	
+    
+print_hex:
+    pusha
+    
+    xor cx,cx
+    
+.hex_loop:
+    cmp cx, 4
+    je .end_print_hex
+    
+    	mov ax,dx
+    and ax, 0x000f
+    add al, 0x30
+    cmp al, 0x39
+    jbe .next_step
+    
+    add al,7
+
+    jmp .next_step
+    
+.next_step:
+    mov bx, HEX_OUT + 5
+    sub bx, cx
+    mov [bx],al 
+    ror dx,4
+    add cx, 1
+    jmp .hex_loop
+    
+.end_print_hex:
+    mov si, HEX_OUT
+    call print_string
+    
+    popa 
+    ret
+    
+    
+HEX_OUT: db '0x0000',0
 input_buffer: times 64 db 0
