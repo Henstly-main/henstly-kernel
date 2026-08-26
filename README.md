@@ -1,3 +1,2 @@
 # henstly-kernel
-My first kernel. For study.
-I wanna see the progress!
+Custom kernel for learn Computer Science
